@@ -7,13 +7,16 @@ import { useRouter } from 'next/navigation';
 export default function RegisterForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { mutate, isPending, error } = useRegister();
   const router = useRouter();
+  const { mutate, isPending, error } = useRegister({
+    onSuccess: () => {
+      router.push('login');
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     mutate({ username, password });
-    router.push('login')
   };
 
   return (
@@ -60,7 +63,7 @@ export default function RegisterForm() {
       </button>
 
       {error && (
-        <p className="text-center text-sm text-red-600 mt-2">Registration failed. Please try again.</p>
+        <p className="text-center text-sm text-red-600 mt-2">{JSON.parse(error.message).error}</p>
       )}
     </form>
   );
